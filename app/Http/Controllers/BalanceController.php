@@ -15,7 +15,19 @@ class BalanceController extends Controller
      */
     public static function get_balance( array $params )
     {
-        return Balance::orderBy('created_at', 'asc')->get();
+
+        if( !empty( $params['user_id'] ) ){
+
+            $result = Balance::where('user_id', '=', (int) $params['user_id'] )
+            ->select(['balance'])
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+            return $result->balance;
+
+        }
+
+        return Balance::orderBy('created_at', 'desc')->take( ( $params['limit'] ?? 50 ) )->get();
     }
     
 }
